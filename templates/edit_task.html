@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h2>Edit Task</h2>
+    <form action="{{ url_for('edit_task', task_id=task.task_id) }}" method="POST">
+        <input type="text" name="name" value="{{ task.name }}" required>
+        <input type="date" name="due_date" value="{{ task.due_date }}" required>
+        <label for="priority">Priority:</label>
+        <select id="priority" name="priority">
+            <option value="High" {% if task.priority == "High" %}selected{% endif %}>High</option>
+            <option value="Medium" {% if task.priority == "Medium" %}selected{% endif %}>Medium</option>
+            <option value="Low" {% if task.priority == "Low" %}selected{% endif %}>Low</option>
+        </select>
+        <input type="text" name="status" value="{{ task.status }}" required>
+        
+        <label for="classificationDropdown">Existing Classification:</label>
+        <select id="classificationDropdown" name="classification_id">  <!-- Updated name -->
+            <option value="">Select Classification</option>
+            {% for classification in classifications %}
+                <option value="{{ classification.classification_id }}"
+                        {% if classification.classification_id == task.classification_id %}selected{% endif %}>
+                    {{ classification.name }}
+                </option>
+            {% endfor %}
+        </select>
+                
+        <button type="submit">Update Task</button>
+    </form>
+    <a href="{{ url_for('index') }}">Back to Task List</a>
+{% endblock %}

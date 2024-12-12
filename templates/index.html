@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus: Task Management</title>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-family: 'La Belle Aurore';
+            color: #cc3366;
+            text-align: center;
+            font-size: 10em;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 40px;
+        }
+        .box {
+            background-color: white;
+            padding: 15px;
+            margin: 5px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        .box h2 {
+            color: #cc3366;
+        }
+        .task-form, .filter-form {
+            display: flex;
+            flex-direction: column;
+        }
+        .task-form label, .filter-form label {
+            margin-top: 10px;
+        }
+        .task-form input, .task-form select, .filter-form input, .filter-form select {
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .task-form button, .filter-form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #cc3366;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .tasks-box {
+            grid-column: span 2;
+            margin-top: 20px;
+        }
+        .task-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .task-item {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .statistics-box {
+            grid-column: span 2; 
+            margin-top: 20px; 
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Focus</h1>
+
+    <div class="container">
+        <!-- Task Entry Section -->
+        <div class="box">
+            <h2>Add Task</h2>
+            <form action="{{ url_for('add_task') }}" method="post" class="task-form">
+                <label for="name">Task Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="due_date">Due Date:</label>
+                <input type="date" id="due_date" name="due_date" required>
+                
+                <label for="priority">Priority:</label>
+                <select id="priority" name="priority">
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                
+                <label for="status">Status:</label>
+                <select id="status" name="status">
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                </select>
+
+                
+                <label for="classificationDropdown">Classification:</label>
+                <select id="classificationDropdown" name="classification_id">
+                    {% for classification in classifications %}
+                        <option value="{{ classification.id }}">{{ classification.name }}</option>
+                    {% endfor %}
+                </select>
+                <label for="new_classification">Or Add New Classification:</label>
+                <input type="text" id="new_classification" name="new_classification" placeholder="Enter new classification">
+                
+                <button type="submit">Add Task</button>
+            </form>
+        </div>
+
+        <!-- Task Filter Section -->
+        <div class="box">
+            <h2>Filter Tasks</h2>
+            <form action="{{ url_for('index') }}" method="get" class="filter-form">
+                <label for="filter_name">Task Name:</label>
+                <input type="text" id="filter_name" name="filter_name">
+                
+                <label for="filter_due_date">Due Date:</label>
+                <input type="date" id="filter_due_date" name="filter_due_date">
+                
+                <label for="filter_priority">Priority:</label>
+                <select id="filter_priority" name="filter_priority">
+                    <option value="">All</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+                
+                <label for="filter_status">Status:</label>
+                <select id="filter_status" name="filter_status">
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Completed">Completed</option>
+                </select>
+
+                
+                <label for="classificationDropdown">Classification:</label>
+                <select id="classificationDropdown" name="filter_classification_id">
+                    <option value="">All</option>
+                    {% for classification in classifications %}
+                        <option value="{{ classification.classification_id }}"
+                                {% if classification.classification_id == filter_classification_id %}selected{% endif %}>
+                            {{ classification.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Apply Filter</button>
+            </form>
+        </div>
+
+        <!-- Task Display Section -->
+        <div class="box tasks-box">
+            <h2>Tasks</h2>
+            <ul class="task-list">
+                {% for task in tasks %}
+            <li class="task-item">
+                <strong>{{ task.name }}</strong> - Due: {{ task.due_date }} - Priority: {{ task.priority }} - Status: {{ task.status }}
+                {% if task.classification %} - Classification: {{ task.classification.name }}{% endif %}
+                <a href="{{ url_for('edit_task', task_id=task.task_id) }}">Edit</a> |
+                <a href="{{ url_for('delete_task', task_id=task.task_id) }}">Delete</a> |
+                <a href="{{ url_for('task_history', task_id=task.task_id) }}">View History</a>
+            </li>
+            {% endfor %}
+
+            </ul>
+        </div>
+
+        <!-- Statistics Display Section -->
+        <div class="box statistics-box">
+            <h2>Filtered Tasks Statistics</h2>
+            <p>Average Completed: {{ average_completed | default(0) | round(2) }}%</p>
+            <p>Productivity Rate: {{ productivity_rate | default(0) | round(2) }}%</p>
+            <p>Average Priority: {{ average_priority | default(0) | round(2) }}</p>
+        </div>
+
+
+    </div>
+
+</body>
+</html>

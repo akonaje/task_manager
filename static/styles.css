@@ -1,0 +1,48 @@
+body {
+    background-color: #ffcccb; /* Light pink background */
+    font-family: Arial; /* Set a nice font */
+}
+
+h1 {
+    text-align: center; /* Center the title */
+    font-size: 3em; /* Large font size */
+    color: #d5006d; /* Dark pink color */
+    margin-top: 20px; /* Space from the top */
+}
+
+.container {
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space out the two sections */
+    margin: 20px; /* Margin around the container */
+}
+
+.section {
+    background-color: #ffffff; /* White background for sections */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    padding: 20px; /* Padding inside sections */
+    flex: 1; /* Take equal space */
+    margin: 10px; /* Space between sections */
+}
+
+form {
+    display: flex;
+    flex-direction: column; /* Stack form elements vertically */
+}
+
+input, select, button {
+    margin: 10px 0; /* Space between form elements */
+    padding: 10px; /* Padding inside form elements */
+    border: 1px solid #d5006d; /* Dark pink border */
+    border-radius: 5px; /* Rounded corners */
+}
+
+button {
+    background-color: #d5006d; /* Dark pink background */
+    color: white; /* White text for button */
+    cursor: pointer; /* Pointer cursor for buttons */
+}
+
+button:hover {
+    background-color: #c7005c; /* Darker pink on hover */
+}

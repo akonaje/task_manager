@@ -1,0 +1,38 @@
+<!-- templates/task_history.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task History</title>
+</head>
+<body>
+    <h1>History for Task: {{ task.name }}</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>Name</th>
+                <th>Due Date</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Classification</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in history_records %}
+            <tr>
+                <td>{{ record.timestamp }}</td>
+                <td>{{ record.name }}</td>
+                <td>{{ record.due_date }}</td>
+                <td>{{ record.priority }}</td>
+                <td>{{ record.status }}</td>
+                <td>{{ record.task.classification.name if record.task.classification else "None" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('index') }}">Back to Task List</a>
+</body>
+</html>
